@@ -72,7 +72,7 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
 
 /* ---------- pages ---------- */
 .screen { padding-top: calc(52px + env(safe-area-inset-top, 0px)); padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); min-height: 100%; }
-.screen.nobars { padding-top: 0; padding-bottom: 0; display: grid; place-items: center; padding-block: 32px; }
+.screen.nobars { padding-top: 0; padding-bottom: 0; display: grid; place-items: center; align-content: center; padding-block: 32px; }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 28px; width: 100%; max-width: 620px; }
 .card h1 { font-size: 24px; margin: 0 0 4px; text-wrap: balance; }
 .card h2 { font-size: 19px; margin: 0 0 12px; text-wrap: balance; }
@@ -165,6 +165,8 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
 .cell.cur { outline: 2px solid var(--ink); outline-offset: 1px; }
 .sheet .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
 
+.credit { font-size: 12.5px; color: var(--muted); text-align: center; margin: 14px 0 0; letter-spacing: .01em; }
+.credit b { font-weight: 600; color: var(--ink); }
 .big { font: 700 64px/1 var(--ui); font-variant-numeric: tabular-nums; color: var(--accent); margin: 8px 0 4px; }
 
 @media (max-width: 760px) {
@@ -225,6 +227,7 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
   // ---------- helpers ----------
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function fmt(ms) { ms = Math.max(0, ms); var s = Math.ceil(ms / 1000), m = Math.floor(s / 60); s = s % 60; return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s; }
+  function creditHtml() { var c = CFG.credit || 'Developed by Syaiful, S.Pd., M.Ed.'; return '<p class="credit">' + esc(c).replace(/^(Developed by )(.+)$/, '$1<b>$2</b>') + '</p>'; }
   function limit(sec) { return CFG.minutes[sec] * 60000; }
   function remaining(sec) { return st.start[sec] ? limit(sec) - (Date.now() - st.start[sec]) : limit(sec); }
   function list(sec) { return T[sec]; }
@@ -254,7 +257,7 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
       '<div class="field"><label for="f-id">Student ID</label><input id="f-id" autocomplete="off" required value="' + esc(prefill.id || '') + '"></div>' +
       '<div class="field"><label for="f-class">Class</label><input id="f-class" autocomplete="off" value="' + esc(prefill.cls || '') + '"></div>' +
       '<button class="btn primary" style="width:100%" ' + (ui.busy ? 'disabled' : '') + '>' + (ui.busy ? 'Checking…' : 'Continue') + '</button>' +
-      '</form></div>';
+      '</form>' + creditHtml() + '</div>';
     document.getElementById('login').addEventListener('submit', function (e) {
       e.preventDefault();
       var name = document.getElementById('f-name').value.trim();
@@ -296,7 +299,7 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
       '</ul>' +
       '<button class="btn primary" id="go" style="width:100%">Go to Section 1</button>' +
       '<p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Not you? <button class="linkbtn" id="out" style="border:0;background:none;color:var(--accent);padding:0;text-decoration:underline">Sign in with another ID</button></p>' +
-      '</div></div>';
+      '</div>' + creditHtml() + '</div>';
     document.getElementById('go').onclick = function () { st.stage = 'intro-L'; save(); render(); };
     document.getElementById('out').onclick = function () { forgetLast(); st = null; render(); };
   }
@@ -320,7 +323,7 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
       DIRECTIONS[sec] +
       (sec === 'L' ? '<p class="msg info">The recording starts as soon as you press the button below.</p>' : '') +
       '<button class="btn primary" id="go" style="width:100%;margin-top:8px">Start ' + SEC[sec].short + '</button>' +
-      '</div></div>';
+      '</div>' + creditHtml() + '</div>';
     document.getElementById('go').onclick = function () {
       st.stage = sec; st.start[sec] = Date.now(); st.cur[sec] = 0; save();
       if (sec === 'L') startAudio();
@@ -343,7 +346,7 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
     if (sec === 'L') html += '<div class="qwrap">' + audioPanel() + questionPanel(sec, q, i, marked) + '</div>';
     else if (sec === 'R') html += '<div class="rgrid">' + passagePanel(q) + questionPanel(sec, q, i, marked) + '</div>';
     else html += '<div class="qwrap">' + questionPanel(sec, q, i, marked) + '</div>';
-    html += '</div></div>';
+    html += '</div>' + creditHtml() + '</div>';
 
     html += '<footer class="bottombar"><div class="in pad">' +
       '<button class="btn" id="prev" ' + (i === 0 ? 'disabled' : '') + '>Back</button>' +
@@ -540,7 +543,7 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
       (ui.err
         ? '<h1>Your answers were not sent yet</h1><p class="msg err" role="alert">' + esc(ui.err) + '</p><button class="btn primary" id="retry" style="width:100%">Try again</button>'
         : '<h1>Sending your answers…</h1><p class="lede">Please wait and keep this page open.</p>') +
-      '</div></div>';
+      '</div>' + creditHtml() + '</div>';
     var r = document.getElementById('retry'); if (r) r.onclick = submit;
   }
 
@@ -557,7 +560,7 @@ button:focus-visible, input:focus-visible, .opt:focus-visible, .ul:focus-visible
       ORDER.map(function (k) { return '<tr><td>' + SEC[k].name + '</td><td class="num">' + r.correct[k] + ' / ' + SEC[k].total + '</td><td class="num">' + r.scaled[k] + '</td></tr>'; }).join('') +
       '</tbody></table>' +
       '<p class="msg info" style="margin:0">Your result has been sent to your teacher. You can close this page.</p>' +
-      '</div></div>';
+      '</div>' + creditHtml() + '</div>';
   }
 
   // ---------- timer ----------

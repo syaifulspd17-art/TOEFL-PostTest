@@ -8,8 +8,11 @@ window.TOEFL_CONFIG = {
   minutes: { L: 35, S: 25, R: 55 },
 
   // Listening audio file
-  audio: '/listening.mp3',
+  audio: 'listening.mp3',
 
   // Test title shown to students
-  title: 'TOEFL ITP Post-Test'
+  title: 'TOEFL ITP Post-Test',
+
+  // Developer credit shown at the bottom of the pages
+  credit: 'Developed by Syaiful, S.Pd., M.Ed.'
 };
